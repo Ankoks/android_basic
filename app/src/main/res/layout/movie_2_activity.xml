@@ -33,6 +33,10 @@
                 android:text="@string/episode_2"
                 android:textAlignment="center"
                 android:textSize="20sp" />
+
+            <CheckBox android:id="@+id/like" android:text="@string/like"  />
+
+            <EditText android:id="@+id/comment" android:hint="@string/enter_your_text" />
         </TableLayout>
     </ScrollView>
 
