@@ -17,7 +17,7 @@
             android:columnCount="2">
 
             <ImageView
-                android:id="@+id/the_phantom_menace"
+                android:id="@+id/episode_1_img"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
@@ -30,7 +30,7 @@
                 android:layout_margin="10dp">
 
                 <TextView
-                    android:id="@+id/starWars1"
+                    android:id="@+id/txtView1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/star_wars_1" />
@@ -43,7 +43,7 @@
             </TableLayout>
 
             <ImageView
-                android:id="@+id/attack_clones"
+                android:id="@+id/episode_2_img"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
@@ -56,7 +56,7 @@
                 android:layout_margin="10dp">
 
                 <TextView
-                    android:id="@+id/starWars2"
+                    android:id="@+id/txtView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/star_wars_2" />
@@ -69,7 +69,7 @@
             </TableLayout>
 
             <ImageView
-                android:id="@+id/revenge_of_the_sith"
+                android:id="@+id/episode_3_img"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
@@ -82,7 +82,7 @@
                 android:layout_margin="10dp">
 
                 <TextView
-                    android:id="@+id/starWars3"
+                    android:id="@+id/txtView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/star_wars_3" />
