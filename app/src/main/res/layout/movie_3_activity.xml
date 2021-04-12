@@ -6,26 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TableLayout
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/revenge_of_the_sith"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:src="@drawable/revenge_of_the_sith" />
-
-        <TextView
-            android:id="@+id/episode_1"
+        <TableLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/episode_3"
-            android:textAlignment="center"
-            android:textSize="20sp" />
-    </TableLayout>
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/revenge_of_the_sith"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:src="@drawable/revenge_of_the_sith" />
+
+            <TextView
+                android:id="@+id/episode_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/episode_3"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+        </TableLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
