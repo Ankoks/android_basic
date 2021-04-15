@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import ru.ankoks.moviessearch.domain.MovieInfo
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -77,10 +78,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun btnAction(value: String) {
-        setColorAndBackground(value)
-
         val intent = Intent(this, MovieActivity::class.java)
+
+        setColorAndBackground(value)
+        setMovieInfo(value, intent)
+
         intent.putExtra(MovieActivity.MOVIE_NUMBER, value)
+
         startActivity(intent)
     }
 
@@ -115,6 +119,20 @@ class MainActivity : AppCompatActivity() {
 
                 textView3.setTextColor(Color.BLUE)
                 img3.setBackgroundResource(R.drawable.border)
+            }
+        }
+    }
+
+    private fun setMovieInfo(value: String, intent: Intent) {
+        when (value) {
+            "1" -> {
+                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.the_phantom_menace, R.string.episode_1))
+            }
+            "2" -> {
+                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.attack_clones, R.string.episode_2))
+            }
+            "3" -> {
+                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.revenge_of_the_sith, R.string.episode_3))
             }
         }
     }
