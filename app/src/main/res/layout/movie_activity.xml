@@ -37,6 +37,12 @@
             <CheckBox android:id="@+id/like" android:text="@string/like"  />
 
             <EditText android:id="@+id/comment" android:hint="@string/enter_your_text" />
+
+            <Button
+                android:id="@+id/inviteBtn"
+                android:text="@string/invite_friends"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
         </TableLayout>
     </ScrollView>
 

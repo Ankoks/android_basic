@@ -1,5 +1,6 @@
 package ru.ankoks.moviessearch
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.CheckBox
 import android.widget.EditText
@@ -30,6 +31,10 @@ class MovieActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.comment)
     }
 
+    private val invite by lazy {
+        findViewById<TextView>(R.id.inviteBtn)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_activity)
@@ -37,7 +42,25 @@ class MovieActivity : AppCompatActivity() {
         val movieInfo = intent.getSerializableExtra(MOVIE_INFO) as MovieInfo
 
         image.setImageResource(movieInfo.src)
-        info.text = getString(movieInfo.description)
+
+        val descriptionText = getString(movieInfo.description)
+        info.text = descriptionText
+
+        invite.setOnClickListener {
+            inviteBtn(descriptionText)
+        }
+    }
+
+    private fun inviteBtn(descriptionText: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "Let's see this movie?" +
+                    "\ndescription: " + descriptionText)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
     override fun onBackPressed() {
