@@ -11,7 +11,6 @@ import ru.ankoks.moviessearch.domain.MovieInfo
 
 class MovieActivity : AppCompatActivity() {
     companion object {
-        const val MOVIE_NUMBER = "MOVIE_NUMBER"
         const val MOVIE_INFO = "MOVIE_INFO"
     }
 

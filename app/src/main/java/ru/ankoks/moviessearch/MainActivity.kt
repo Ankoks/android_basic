@@ -2,10 +2,13 @@ package ru.ankoks.moviessearch
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.domain.MovieInfo
+import ru.ankoks.moviessearch.domain.MovieList
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -13,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val recycler by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
+    private val favourite by lazy { findViewById<View>(R.id.favouriteBtn) }
 
     private var positionPressed: Int = -1
 
@@ -42,17 +46,38 @@ class MainActivity : AppCompatActivity() {
                 recycler.adapter?.notifyItemChanged(position)
             }
         }
+
+        favourite.setOnClickListener {
+            val intent = Intent(this, FavouriteActivity::class.java)
+
+            intent.putExtra(FavouriteActivity.MOVIE_LIST, MovieList(items))
+
+            startActivity(intent)
+        }
     }
 
     private fun initRecycler() {
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recycler.adapter = MovieAdapter(items) { item, position ->
-            movieAction(item)
+        recycler.adapter = MovieAdapter(
+                items,
+                fun(movieInfo: MovieInfo, position: Int) {
+                    movieAction(movieInfo)
 
-            positionPressed = position
-            item.clicked = true
-            recycler.adapter?.notifyItemChanged(position)
-        }
+                    positionPressed = position
+                    movieInfo.clicked = true
+                    recycler.adapter?.notifyItemChanged(position)
+                },
+                fun(movieInfo: MovieInfo, imageView: ImageView) {
+                    if (movieInfo.isFavourite) {
+                        movieInfo.isFavourite = false
+                        imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+                    } else {
+                        movieInfo.isFavourite = true
+                        imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
+                    }
+
+                    recycler.adapter?.notifyDataSetChanged()
+                })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
