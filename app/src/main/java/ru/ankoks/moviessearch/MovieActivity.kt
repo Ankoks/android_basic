@@ -37,13 +37,13 @@ class MovieActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.movie_activity)
+        setContentView(R.layout.movie_info)
 
         val movieInfo = intent.getSerializableExtra(MOVIE_INFO) as MovieInfo
 
-        image.setImageResource(movieInfo.src)
+        image.setImageResource(movieInfo.image)
 
-        val descriptionText = getString(movieInfo.description)
+        val descriptionText = movieInfo.description
         info.text = descriptionText
 
         invite.setOnClickListener {

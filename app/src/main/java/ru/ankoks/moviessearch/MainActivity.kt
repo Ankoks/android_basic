@@ -1,139 +1,59 @@
 package ru.ankoks.moviessearch
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.domain.MovieInfo
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        private const val TEXT_COLOR_1 = "TEXT_COLOR_1"
-        private const val TEXT_COLOR_2 = "TEXT_COLOR_2"
-        private const val TEXT_COLOR_3 = "TEXT_COLOR_3"
+        private const val POSITION_PRESSED = "POSITION_PRESSED"
     }
 
-    private val textView1 by lazy {
-        findViewById<TextView>(R.id.txtView1)
-    }
-    private val textView2 by lazy {
-        findViewById<TextView>(R.id.txtView2)
-    }
-    private val textView3 by lazy {
-        findViewById<TextView>(R.id.txtView3)
-    }
+    private val recycler by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
 
-    private val img1 by lazy {
-        findViewById<ImageView>(R.id.episode_1_img)
-    }
-    private val img2 by lazy {
-        findViewById<ImageView>(R.id.episode_2_img)
-    }
-    private val img3 by lazy {
-        findViewById<ImageView>(R.id.episode_3_img)
-    }
+    private var positionPressed: Int = 0
+
+    private val items: List<MovieInfo>
+        get() {
+            return mutableListOf(
+                    MovieInfo(getString(R.string.star_wars_1), getString(R.string.episode_1), R.drawable.the_phantom_menace),
+                    MovieInfo(getString(R.string.star_wars_2), getString(R.string.episode_2), R.drawable.attack_clones),
+                    MovieInfo(getString(R.string.star_wars_3), getString(R.string.episode_3), R.drawable.revenge_of_the_sith),
+                    MovieInfo(getString(R.string.star_wars_4), getString(R.string.episode_4), R.drawable.new_hope),
+                    MovieInfo(getString(R.string.star_wars_5), getString(R.string.episode_5), R.drawable.the_empire_strikes_back),
+                    MovieInfo(getString(R.string.star_wars_6), getString(R.string.episode_6), R.drawable.return_of_the_jedi)
+            )
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        savedInstanceState?.let {
-            textView1.setTextColor(it.getInt(TEXT_COLOR_1))
-            textView2.setTextColor(it.getInt(TEXT_COLOR_2))
-            textView3.setTextColor(it.getInt(TEXT_COLOR_3))
+        initRecycler()
+    }
 
-            if (it.getInt(TEXT_COLOR_1) != Color.BLACK) {
-                img1.setBackgroundResource(R.drawable.border)
-            }
-            if (it.getInt(TEXT_COLOR_2) != Color.BLACK) {
-                img2.setBackgroundResource(R.drawable.border)
-            }
-            if (it.getInt(TEXT_COLOR_3) != Color.BLACK) {
-                img3.setBackgroundResource(R.drawable.border)
-            }
-        }
-
-        findViewById<View>(R.id.btn1).setOnClickListener {
-            btnAction("1")
-        }
-
-        findViewById<View>(R.id.btn2).setOnClickListener {
-            btnAction("2")
-        }
-
-        findViewById<View>(R.id.btn3).setOnClickListener {
-            btnAction("3")
+    private fun initRecycler() {
+        recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recycler.adapter = MovieAdapter(items) { item, position ->
+            positionPressed = position
+            movieAction(item, position)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putInt(TEXT_COLOR_1, textView1.currentTextColor)
-        outState.putInt(TEXT_COLOR_2, textView2.currentTextColor)
-        outState.putInt(TEXT_COLOR_3, textView3.currentTextColor)
+        outState.putInt(POSITION_PRESSED, positionPressed)
     }
 
-    private fun btnAction(value: String) {
+    private fun movieAction(movieInfo: MovieInfo, position: Int) {
         val intent = Intent(this, MovieActivity::class.java)
 
-        setColorAndBackground(value)
-        setMovieInfo(value, intent)
-
-        intent.putExtra(MovieActivity.MOVIE_NUMBER, value)
+        intent.putExtra(MovieActivity.MOVIE_INFO, movieInfo)
 
         startActivity(intent)
-    }
-
-    private fun setColorAndBackground(value: String) {
-        when (value) {
-            "1" -> {
-                textView1.setTextColor(Color.BLUE)
-                img1.setBackgroundResource(R.drawable.border)
-
-                textView2.setTextColor(Color.BLACK)
-                img2.setBackgroundResource(0)
-
-                textView3.setTextColor(Color.BLACK)
-                img3.setBackgroundResource(0)
-            }
-            "2" -> {
-                textView1.setTextColor(Color.BLACK)
-                img1.setBackgroundResource(0)
-
-                textView2.setTextColor(Color.BLUE)
-                img2.setBackgroundResource(R.drawable.border)
-
-                textView3.setTextColor(Color.BLACK)
-                img3.setBackgroundResource(0)
-            }
-            "3" -> {
-                textView1.setTextColor(Color.BLACK)
-                img1.setBackgroundResource(0)
-
-                textView2.setTextColor(Color.BLACK)
-                img2.setBackgroundResource(0)
-
-                textView3.setTextColor(Color.BLUE)
-                img3.setBackgroundResource(R.drawable.border)
-            }
-        }
-    }
-
-    private fun setMovieInfo(value: String, intent: Intent) {
-        when (value) {
-            "1" -> {
-                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.the_phantom_menace, R.string.episode_1))
-            }
-            "2" -> {
-                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.attack_clones, R.string.episode_2))
-            }
-            "3" -> {
-                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.revenge_of_the_sith, R.string.episode_3))
-            }
-        }
     }
 }
