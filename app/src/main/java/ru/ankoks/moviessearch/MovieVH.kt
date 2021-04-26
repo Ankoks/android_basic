@@ -13,5 +13,9 @@ class MovieVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(movieInfo: MovieInfo) {
         title.text = movieInfo.title
         img.setImageResource(movieInfo.image)
+
+        if (movieInfo.clicked) {
+            itemView.setBackgroundResource(R.drawable.border)
+        }
     }
 }

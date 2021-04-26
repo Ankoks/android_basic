@@ -16,30 +16,39 @@ class MainActivity : AppCompatActivity() {
 
     private var positionPressed: Int = 0
 
-    private val items: List<MovieInfo>
-        get() {
-            return mutableListOf(
-                    MovieInfo(getString(R.string.star_wars_1), getString(R.string.episode_1), R.drawable.the_phantom_menace),
-                    MovieInfo(getString(R.string.star_wars_2), getString(R.string.episode_2), R.drawable.attack_clones),
-                    MovieInfo(getString(R.string.star_wars_3), getString(R.string.episode_3), R.drawable.revenge_of_the_sith),
-                    MovieInfo(getString(R.string.star_wars_4), getString(R.string.episode_4), R.drawable.new_hope),
-                    MovieInfo(getString(R.string.star_wars_5), getString(R.string.episode_5), R.drawable.the_empire_strikes_back),
-                    MovieInfo(getString(R.string.star_wars_6), getString(R.string.episode_6), R.drawable.return_of_the_jedi)
-            )
-        }
+    private lateinit var items: List<MovieInfo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        items = mutableListOf(
+                MovieInfo(getString(R.string.star_wars_1), getString(R.string.episode_1), R.drawable.the_phantom_menace),
+                MovieInfo(getString(R.string.star_wars_2), getString(R.string.episode_2), R.drawable.attack_clones),
+                MovieInfo(getString(R.string.star_wars_3), getString(R.string.episode_3), R.drawable.revenge_of_the_sith),
+                MovieInfo(getString(R.string.star_wars_4), getString(R.string.episode_4), R.drawable.new_hope),
+                MovieInfo(getString(R.string.star_wars_5), getString(R.string.episode_5), R.drawable.the_empire_strikes_back),
+                MovieInfo(getString(R.string.star_wars_6), getString(R.string.episode_6), R.drawable.return_of_the_jedi)
+        )
+
         initRecycler()
+
+        savedInstanceState?.let {
+            val position = it.getInt(POSITION_PRESSED)
+
+            items[position].clicked = true
+            recycler.adapter?.notifyItemChanged(position)
+        }
     }
 
     private fun initRecycler() {
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recycler.adapter = MovieAdapter(items) { item, position ->
+            movieAction(item)
+
             positionPressed = position
-            movieAction(item, position)
+            item.clicked = true
+            recycler.adapter?.notifyItemChanged(position)
         }
     }
 
@@ -49,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         outState.putInt(POSITION_PRESSED, positionPressed)
     }
 
-    private fun movieAction(movieInfo: MovieInfo, position: Int) {
+    private fun movieAction(movieInfo: MovieInfo) {
         val intent = Intent(this, MovieActivity::class.java)
 
         intent.putExtra(MovieActivity.MOVIE_INFO, movieInfo)
