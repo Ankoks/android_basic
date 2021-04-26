@@ -36,6 +36,7 @@ class FavouriteActivity : AppCompatActivity() {
             recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             recycler.adapter = MovieAdapter(
                     result,
+                    true,
                     fun(item: MovieInfo, position: Int) {},
                     fun(item: MovieInfo, imageView: ImageView) {}
             )

@@ -8,15 +8,21 @@ import ru.ankoks.moviessearch.domain.MovieInfo
 
 class MovieAdapter(
         private val items: List<MovieInfo>,
+        private val isFavourite: Boolean,
         val movieClickListener: (item: MovieInfo, position: Int) -> Unit,
         val favouriteClickListener: (item: MovieInfo, imageView: ImageView) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.movie_item, parent, false)
-        val vh = MovieVH(view);
-
-        return vh;
+        return if (isFavourite) {
+            MovieVH(
+                    inflater.inflate(R.layout.favourite_item, parent, false)
+            )
+        } else {
+            MovieVH(
+                    inflater.inflate(R.layout.movie_item, parent, false)
+            )
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -29,7 +35,8 @@ class MovieAdapter(
             }
 
             val favourite = holder.itemView.findViewById<ImageView>(R.id.favouriteImg)
-            favourite.setOnClickListener {
+
+            favourite?.setOnClickListener {
                 favouriteClickListener(movieInfo, favourite)
             }
         }

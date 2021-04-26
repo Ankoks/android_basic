@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recycler.adapter = MovieAdapter(
                 items,
+                false,
                 fun(movieInfo: MovieInfo, position: Int) {
                     movieAction(movieInfo)
 
