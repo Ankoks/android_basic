@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private val recycler by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
 
-    private var positionPressed: Int = 0
+    private var positionPressed: Int = -1
 
     private lateinit var items: List<MovieInfo>
 
@@ -36,8 +36,11 @@ class MainActivity : AppCompatActivity() {
         savedInstanceState?.let {
             val position = it.getInt(POSITION_PRESSED)
 
-            items[position].clicked = true
-            recycler.adapter?.notifyItemChanged(position)
+            if (position != -1) {
+                positionPressed = position
+                items[position].clicked = true
+                recycler.adapter?.notifyItemChanged(position)
+            }
         }
     }
 
