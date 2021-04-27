@@ -31,12 +31,36 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         items = mutableListOf(
-                MovieInfo(getString(R.string.star_wars_1), getString(R.string.episode_1), R.drawable.the_phantom_menace),
-                MovieInfo(getString(R.string.star_wars_2), getString(R.string.episode_2), R.drawable.attack_clones),
-                MovieInfo(getString(R.string.star_wars_3), getString(R.string.episode_3), R.drawable.revenge_of_the_sith),
-                MovieInfo(getString(R.string.star_wars_4), getString(R.string.episode_4), R.drawable.new_hope),
-                MovieInfo(getString(R.string.star_wars_5), getString(R.string.episode_5), R.drawable.the_empire_strikes_back),
-                MovieInfo(getString(R.string.star_wars_6), getString(R.string.episode_6), R.drawable.return_of_the_jedi)
+            MovieInfo(
+                getString(R.string.star_wars_1),
+                getString(R.string.episode_1),
+                R.drawable.the_phantom_menace
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_2),
+                getString(R.string.episode_2),
+                R.drawable.attack_clones
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_3),
+                getString(R.string.episode_3),
+                R.drawable.revenge_of_the_sith
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_4),
+                getString(R.string.episode_4),
+                R.drawable.new_hope
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_5),
+                getString(R.string.episode_5),
+                R.drawable.the_empire_strikes_back
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_6),
+                getString(R.string.episode_6),
+                R.drawable.return_of_the_jedi
+            )
         )
 
         initRecycler()
@@ -63,26 +87,26 @@ class MainActivity : AppCompatActivity() {
     private fun initRecycler() {
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recycler.adapter = MovieAdapter(
-                items,
-                false,
-                fun(movieInfo: MovieInfo, position: Int) {
-                    movieAction(movieInfo)
+            items,
+            false,
+            fun(movieInfo: MovieInfo, position: Int) {
+                movieAction(movieInfo)
 
-                    positionPressed = position
-                    movieInfo.clicked = true
-                    recycler.adapter?.notifyItemChanged(position)
-                },
-                fun(movieInfo: MovieInfo, imageView: ImageView) {
-                    if (movieInfo.isFavourite) {
-                        movieInfo.isFavourite = false
-                        imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
-                    } else {
-                        movieInfo.isFavourite = true
-                        imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
-                    }
+                positionPressed = position
+                movieInfo.clicked = true
+                recycler.adapter?.notifyItemChanged(position)
+            },
+            fun(movieInfo: MovieInfo, imageView: ImageView) {
+                if (movieInfo.isFavourite) {
+                    movieInfo.isFavourite = false
+                    imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+                } else {
+                    movieInfo.isFavourite = true
+                    imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
+                }
 
-                    recycler.adapter?.notifyDataSetChanged()
-                })
+                recycler.adapter?.notifyDataSetChanged()
+            })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -97,7 +121,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val stringExtra = data?.getStringExtra("logMsg") ?: "no content"
-                Toast.makeText(this, stringExtra , Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, stringExtra, Toast.LENGTH_SHORT).show()
                 Log.d("onActivityResult", stringExtra)
             }
         }
