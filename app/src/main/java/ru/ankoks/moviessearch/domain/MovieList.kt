@@ -1,5 +1,7 @@
 package ru.ankoks.moviessearch.domain
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-class MovieList(val items: List<MovieInfo>) : Serializable
+@Parcelize
+class MovieList(val items: List<MovieInfo>) : Parcelable

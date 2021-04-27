@@ -23,11 +23,10 @@ class FavouriteActivity : AppCompatActivity() {
     }
 
     private fun initRecycler() {
-        intent.getSerializableExtra(MOVIE_LIST)?.let {
-            val movies = it as MovieList
+        intent.getParcelableExtra<MovieList>(MOVIE_LIST)?.let {
             val result: MutableList<MovieInfo> = mutableListOf()
 
-            for (item in movies.items) {
+            for (item in it.items) {
                 if (item.isFavourite) {
                     result.add(item)
                 }
