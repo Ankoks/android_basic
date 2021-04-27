@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">MoviesSearch</string>
+    <string name="app_name">Movies Search app</string>
+    <string name="star_wars_1">Star wars 1</string>
+    <string name="star_wars_2">Star wars 2</string>
+    <string name="star_wars_3">Star wars 3</string>
+    <string name="detail">Detail</string>
+    <string name="episode_1">
+        Two Jedi escape a hostile blockade to find allies and come across a young boy who may bring balance to the Force, but the long dormant Sith resurface to claim their original glory.
+    </string>
+    <string name="episode_2">
+        Ten years after initially meeting, Anakin Skywalker shares a forbidden romance with Padmé Amidala, while Obi-Wan Kenobi investigates an assassination attempt on the senator and discovers a secret clone army crafted for the Jedi.
+    </string>
+    <string name="episode_3">
+        Three years into the Clone Wars, the Jedi rescue Palpatine from Count Dooku. As Obi-Wan pursues a new threat, Anakin acts as a double agent between the Jedi Council and Palpatine and is lured into a sinister plan to rule the galaxy.
+    </string>
+    <string name="like">Like</string>
+    <string name="enter_your_text">Enter your text</string>
+    <string name="invite_friends">Invite friends</string>
 </resources>
