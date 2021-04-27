@@ -2,6 +2,7 @@ package ru.ankoks.moviessearch
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
@@ -11,7 +12,6 @@ import ru.ankoks.moviessearch.domain.MovieInfo
 
 class MovieActivity : AppCompatActivity() {
     companion object {
-        const val MOVIE_NUMBER = "MOVIE_NUMBER"
         const val MOVIE_INFO = "MOVIE_INFO"
     }
 
@@ -39,7 +39,7 @@ class MovieActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_activity)
 
-        val movieInfo = intent.getSerializableExtra(MOVIE_INFO) as MovieInfo
+        val movieInfo = intent.getParcelableExtra<MovieInfo>(MOVIE_INFO)!!
 
         image.setImageResource(movieInfo.src)
 
@@ -65,7 +65,8 @@ class MovieActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        println(
+        Log.d(
+                "onBackPressed",
                 String.format("Like value: [%s] and user comment: [%s]",
                         likeRadio.isChecked,
                         commentText.text.toString()

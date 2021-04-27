@@ -83,8 +83,6 @@ class MainActivity : AppCompatActivity() {
         setColorAndBackground(value)
         setMovieInfo(value, intent)
 
-        intent.putExtra(MovieActivity.MOVIE_NUMBER, value)
-
         startActivity(intent)
     }
 
