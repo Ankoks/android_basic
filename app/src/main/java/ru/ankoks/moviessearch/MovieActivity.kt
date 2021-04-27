@@ -1,5 +1,6 @@
 package ru.ankoks.moviessearch
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.CheckBox
@@ -63,12 +64,18 @@ class MovieActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        println(
-                String.format("Like value: [%s] and user comment: [%s]",
-                        likeRadio.isChecked,
-                        commentText.text.toString()
+        setResult(
+            Activity.RESULT_OK,
+            Intent().putExtra(
+                "logMsg",
+                String.format(
+                    "Like value: [%s] and user comment: [%s]",
+                    likeRadio.isChecked,
+                    commentText.text.toString()
                 )
+            )
         )
+
+        super.onBackPressed()
     }
 }

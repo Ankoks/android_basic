@@ -1,9 +1,12 @@
 package ru.ankoks.moviessearch
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +16,7 @@ import ru.ankoks.moviessearch.domain.MovieList
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val POSITION_PRESSED = "POSITION_PRESSED"
+        private const val REQUEST_CODE = 101
     }
 
     private val recycler by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
@@ -87,11 +91,23 @@ class MainActivity : AppCompatActivity() {
         outState.putInt(POSITION_PRESSED, positionPressed)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                val stringExtra = data?.getStringExtra("logMsg") ?: "no content"
+                Toast.makeText(this, stringExtra , Toast.LENGTH_SHORT).show()
+                Log.d("onActivityResult", stringExtra)
+            }
+        }
+    }
+
     private fun movieAction(movieInfo: MovieInfo) {
         val intent = Intent(this, MovieActivity::class.java)
 
         intent.putExtra(MovieActivity.MOVIE_INFO, movieInfo)
 
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE)
     }
 }
