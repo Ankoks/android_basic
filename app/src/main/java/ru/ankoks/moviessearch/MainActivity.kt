@@ -1,6 +1,9 @@
 package ru.ankoks.moviessearch
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.domain.MovieInfo
 import ru.ankoks.moviessearch.domain.MovieList
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -132,6 +136,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        customDialog()?.show()
+    }
+
+    private fun customDialog(): AlertDialog? {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Exit dialog")
+            .setMessage("Do you really want to exit?")
+            .setIcon(R.drawable.ic_baseline_mood_bad_24)
+            .setPositiveButton("No") { dialog, id ->
+                dialog.cancel()
+            }
+            .setNegativeButton("Yes") { dialog, id ->
+                exitProcess(0)
+            }
+        return builder.create()
     }
 
     private fun movieAction(movieInfo: MovieInfo, position: Int) {
