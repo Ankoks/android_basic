@@ -90,11 +90,8 @@ class MainActivity : AppCompatActivity() {
             items,
             false,
             fun(movieInfo: MovieInfo, position: Int) {
-                movieAction(movieInfo)
-
+                movieAction(movieInfo, position)
                 positionPressed = position
-                movieInfo.clicked = true
-                recycler.adapter?.notifyItemChanged(position)
             },
             fun(movieInfo: MovieInfo, imageView: ImageView) {
                 if (movieInfo.isFavourite) {
@@ -123,14 +120,25 @@ class MainActivity : AppCompatActivity() {
                 val stringExtra = data?.getStringExtra("logMsg") ?: "no content"
                 Toast.makeText(this, stringExtra, Toast.LENGTH_SHORT).show()
                 Log.d("onActivityResult", stringExtra)
+
+                val pos = data?.getIntExtra("POSITION", -1)
+
+                pos?.let { it ->
+                    items.forEach { element ->
+                        element.clicked = false
+                    }
+                    items[it].clicked = true
+                    recycler.adapter?.notifyDataSetChanged()
+                }
             }
         }
     }
 
-    private fun movieAction(movieInfo: MovieInfo) {
+    private fun movieAction(movieInfo: MovieInfo, position: Int) {
         val intent = Intent(this, MovieActivity::class.java)
 
         intent.putExtra(MovieActivity.MOVIE_INFO, movieInfo)
+        intent.putExtra(MovieActivity.MOVIE_NUMBER, position)
 
         startActivityForResult(intent, REQUEST_CODE)
     }

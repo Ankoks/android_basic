@@ -16,6 +16,8 @@ class MovieVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         if (movieInfo.clicked) {
             itemView.setBackgroundResource(R.drawable.border)
+        } else {
+            itemView.setBackgroundResource(0)
         }
     }
 }
