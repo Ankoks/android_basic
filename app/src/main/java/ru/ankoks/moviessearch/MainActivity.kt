@@ -1,11 +1,14 @@
 package ru.ankoks.moviessearch
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ru.ankoks.moviessearch.domain.MovieInfo
 
@@ -77,13 +80,25 @@ class MainActivity : AppCompatActivity() {
         outState.putInt(TEXT_COLOR_3, textView3.currentTextColor)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 111) {
+            if (resultCode == Activity.RESULT_OK) {
+                val stringExtra = data?.getStringExtra("logMsg") ?: "no content"
+                Toast.makeText(this, stringExtra , Toast.LENGTH_SHORT).show()
+                Log.d("onActivityResult", stringExtra)
+            }
+        }
+    }
+
     private fun btnAction(value: String) {
         val intent = Intent(this, MovieActivity::class.java)
 
         setColorAndBackground(value)
         setMovieInfo(value, intent)
 
-        startActivity(intent)
+        startActivityForResult(intent, 111)
     }
 
     private fun setColorAndBackground(value: String) {

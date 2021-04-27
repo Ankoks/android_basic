@@ -1,5 +1,6 @@
 package ru.ankoks.moviessearch
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -54,8 +55,10 @@ class MovieActivity : AppCompatActivity() {
     private fun inviteBtn(descriptionText: String) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, "Let's see this movie?" +
-                    "\ndescription: " + descriptionText)
+            putExtra(
+                Intent.EXTRA_TEXT, "Let's see this movie?" +
+                        "\ndescription: " + descriptionText
+            )
             type = "text/plain"
         }
 
@@ -64,13 +67,18 @@ class MovieActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        Log.d(
-                "onBackPressed",
-                String.format("Like value: [%s] and user comment: [%s]",
-                        likeRadio.isChecked,
-                        commentText.text.toString()
+        setResult(
+            Activity.RESULT_OK,
+            Intent().putExtra(
+                "logMsg",
+                String.format(
+                    "Like value: [%s] and user comment: [%s]",
+                    likeRadio.isChecked,
+                    commentText.text.toString()
                 )
+            )
         )
+
+        super.onBackPressed()
     }
 }
