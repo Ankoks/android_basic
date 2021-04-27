@@ -1,8 +1,10 @@
 package ru.ankoks.moviessearch
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.domain.MovieInfo
@@ -32,7 +34,11 @@ class FavouriteActivity : AppCompatActivity() {
                 }
             }
 
-            recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            } else {
+                recycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+            }
             recycler.adapter = MovieAdapter(
                     result,
                     true,

@@ -3,12 +3,14 @@ package ru.ankoks.moviessearch
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.domain.MovieInfo
@@ -87,7 +89,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecycler() {
-        recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        } else {
+            recycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+        }
         recycler.adapter = MovieAdapter(
             items,
             false,
