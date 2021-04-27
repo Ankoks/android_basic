@@ -54,8 +54,10 @@ class MovieActivity : AppCompatActivity() {
     private fun inviteBtn(descriptionText: String) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, "Let's see this movie?" +
-                    "\ndescription: " + descriptionText)
+            putExtra(
+                Intent.EXTRA_TEXT, "Let's see this movie?" +
+                        "\ndescription: " + descriptionText
+            )
             type = "text/plain"
         }
 
