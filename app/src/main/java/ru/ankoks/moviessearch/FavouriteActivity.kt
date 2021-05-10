@@ -42,8 +42,8 @@ class FavouriteActivity : AppCompatActivity() {
             recycler.adapter = MovieAdapter(
                     result,
                     true,
-                    fun(item: MovieInfo, position: Int) {},
-                    fun(item: MovieInfo, imageView: ImageView) {}
+                    fun(_: MovieInfo, _: Int) {},
+                    fun(_: MovieInfo, _: ImageView) {}
             )
         }
     }

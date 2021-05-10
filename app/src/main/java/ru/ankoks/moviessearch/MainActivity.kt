@@ -38,32 +38,32 @@ class MainActivity : AppCompatActivity() {
             MovieInfo(
                 getString(R.string.star_wars_1),
                 getString(R.string.episode_1),
-                R.drawable.the_phantom_menace
+                R.drawable.poster_the_phantom_menace
             ),
             MovieInfo(
                 getString(R.string.star_wars_2),
                 getString(R.string.episode_2),
-                R.drawable.attack_clones
+                R.drawable.poster_attack_clones
             ),
             MovieInfo(
                 getString(R.string.star_wars_3),
                 getString(R.string.episode_3),
-                R.drawable.revenge_of_the_sith
+                R.drawable.poster_revenge_of_the_sith
             ),
             MovieInfo(
                 getString(R.string.star_wars_4),
                 getString(R.string.episode_4),
-                R.drawable.new_hope
+                R.drawable.poster_new_hope
             ),
             MovieInfo(
                 getString(R.string.star_wars_5),
                 getString(R.string.episode_5),
-                R.drawable.the_empire_strikes_back
+                R.drawable.poster_the_empire_strikes_back
             ),
             MovieInfo(
                 getString(R.string.star_wars_6),
                 getString(R.string.episode_6),
-                R.drawable.return_of_the_jedi
+                R.drawable.poster_return_of_the_jedi
             )
         )
 
