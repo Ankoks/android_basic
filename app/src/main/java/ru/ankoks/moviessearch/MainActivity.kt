@@ -2,6 +2,7 @@ package ru.ankoks.moviessearch
 
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -125,9 +126,11 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener, M
         if (movieInfo.isFavourite) {
             movieInfo.isFavourite = false
             imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+            Toast.makeText(this, "Successfully deleted from favorites", Toast.LENGTH_SHORT).show()
         } else {
             movieInfo.isFavourite = true
             imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
+            Toast.makeText(this, "Successfully added to favorites", Toast.LENGTH_SHORT).show()
         }
     }
 }
