@@ -3,9 +3,11 @@ package ru.ankoks.moviessearch
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ankoks.moviessearch.domain.MovieInfo
 import ru.ankoks.moviessearch.fragments.MovieFragment
 import ru.ankoks.moviessearch.fragments.MoviesFragment
+
 
 class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
     private lateinit var items: List<MovieInfo>
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
 
         initItems()
         showNewsList()
+        initBottomNavigation()
     }
 
     private fun initItems() {
@@ -53,14 +56,6 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
         )
     }
 
-    override fun onAttachFragment(fragment: Fragment) {
-        super.onAttachFragment(fragment)
-
-        if (fragment is MoviesFragment) {
-            fragment.listener = this
-        }
-    }
-
     private fun showNewsList() {
         val moviesListFragment = MoviesFragment(
             items
@@ -69,15 +64,39 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragmentContainer, moviesListFragment, MoviesFragment.TAG)
+            .addToBackStack(null)
             .commit()
     }
 
     private fun showMoviesDetails(item: MovieInfo) {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragmentContainer, MovieFragment.newInstanceKotlin(item), MovieFragment.TAG)
+            .replace(
+                R.id.fragmentContainer,
+                MovieFragment.newInstanceKotlin(item),
+                MovieFragment.TAG
+            )
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun initBottomNavigation() {
+        findViewById<BottomNavigationView>(R.id.bottom_navigation)
+            .setOnNavigationItemSelectedListener {
+                when(it.itemId){
+                    R.id.homePage-> {
+                        showNewsList()
+                        return@setOnNavigationItemSelectedListener true
+                    }
+
+                    R.id.favPage-> {
+                        showNewsList()
+                        return@setOnNavigationItemSelectedListener true
+                    }
+                }
+                false
+
+            }
     }
 
     override fun onClick(movieInfo: MovieInfo) {
@@ -87,5 +106,13 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
         movieInfo.clicked = true
 
         showMoviesDetails(movieInfo)
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+
+        if (fragment is MoviesFragment) {
+            fragment.listener = this
+        }
     }
 }
