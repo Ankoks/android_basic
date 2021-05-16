@@ -1,15 +1,17 @@
 package ru.ankoks.moviessearch
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ankoks.moviessearch.domain.MovieInfo
+import ru.ankoks.moviessearch.fragments.FavouritesFragment
 import ru.ankoks.moviessearch.fragments.MovieFragment
 import ru.ankoks.moviessearch.fragments.MoviesFragment
 
 
-class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
+class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener, MoviesFragment.OnAddToFavouriteListener {
     private lateinit var items: List<MovieInfo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +19,7 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
         setContentView(R.layout.activity_main)
 
         initItems()
-        showNewsList()
+        showMoviesList()
         initBottomNavigation()
     }
 
@@ -56,41 +58,52 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
         )
     }
 
-    private fun showNewsList() {
-        val moviesListFragment = MoviesFragment(
-            items
-        )
-        /*newsListFragment.listener = this*/
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, moviesListFragment, MoviesFragment.TAG)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun showMoviesDetails(item: MovieInfo) {
+    private fun openFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(
                 R.id.fragmentContainer,
-                MovieFragment.newInstanceKotlin(item),
-                MovieFragment.TAG
+                fragment,
+                MoviesFragment.TAG
             )
             .addToBackStack(null)
             .commit()
     }
 
+
+    private fun showMoviesList() {
+        openFragment(
+            MoviesFragment(
+                items
+            )
+        )
+    }
+
+    private fun showFavouritesList() {
+        openFragment(
+            FavouritesFragment(
+                items
+            )
+        )
+    }
+
+    private fun showMoviesDetails(item: MovieInfo) {
+        openFragment(
+            MovieFragment.newInstanceKotlin(item)
+        )
+    }
+
     private fun initBottomNavigation() {
         findViewById<BottomNavigationView>(R.id.bottom_navigation)
             .setOnNavigationItemSelectedListener {
-                when(it.itemId){
-                    R.id.homePage-> {
-                        showNewsList()
+                when (it.itemId) {
+                    R.id.homePage -> {
+                        showMoviesList()
                         return@setOnNavigationItemSelectedListener true
                     }
 
-                    R.id.favPage-> {
-                        showNewsList()
+                    R.id.favPage -> {
+                        showFavouritesList()
                         return@setOnNavigationItemSelectedListener true
                     }
                 }
@@ -108,11 +121,13 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
         showMoviesDetails(movieInfo)
     }
 
-    override fun onAttachFragment(fragment: Fragment) {
-        super.onAttachFragment(fragment)
-
-        if (fragment is MoviesFragment) {
-            fragment.listener = this
+    override fun onAddToFavourite(movieInfo: MovieInfo, imageView: ImageView) {
+        if (movieInfo.isFavourite) {
+            movieInfo.isFavourite = false
+            imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+        } else {
+            movieInfo.isFavourite = true
+            imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
         }
     }
 }

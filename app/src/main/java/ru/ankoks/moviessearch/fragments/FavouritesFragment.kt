@@ -7,17 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.R
 import ru.ankoks.moviessearch.domain.MovieInfo
 import ru.ankoks.moviessearch.recycler.MoviesAdapter
 
-class MoviesFragment(var items: List<MovieInfo>) : Fragment() {
+class FavouritesFragment(var items: List<MovieInfo>) : Fragment() {
     companion object {
-        const val TAG = "MoviesListFragment"
+        const val TAG = "FavouritesFragment"
     }
 
     override fun onCreateView(
@@ -25,43 +23,25 @@ class MoviesFragment(var items: List<MovieInfo>) : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_movies_list, container, false)
+        return inflater.inflate(R.layout.fragment_favourites_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<RecyclerView>(R.id.recyclerView).adapter = MoviesAdapter(
-            items,
-            false,
-            fun(movieInfo: MovieInfo) {
-                (requireActivity() as? OnMovieClickListener)?.onClick(movieInfo)
-            },
-            fun(movieInfo: MovieInfo, imageView: ImageView) {
-                (requireActivity() as? OnAddToFavouriteListener)?.onAddToFavourite(
-                    movieInfo,
-                    imageView
-                )
-            }
-        )
+        val result: MutableList<MovieInfo> = mutableListOf()
 
-        setFragmentResultListener("requestKey") { requestKey, bundle ->
-            run {
-                Toast.makeText(
-                    context,
-                    bundle.getString("bundleKey").toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+        for (item in items) {
+            if (item.isFavourite) {
+                result.add(item)
             }
         }
-    }
 
-    interface OnMovieClickListener {
-        fun onClick(movieInfo: MovieInfo)
+        view.findViewById<RecyclerView>(R.id.recyclerView).adapter = MoviesAdapter(
+            result,
+            true,
+            fun(_: MovieInfo) {},
+            fun(_: MovieInfo, _: ImageView) {}
+        )
     }
-
-    interface OnAddToFavouriteListener {
-        fun onAddToFavourite(movieInfo: MovieInfo, imageView: ImageView)
-    }
-
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
