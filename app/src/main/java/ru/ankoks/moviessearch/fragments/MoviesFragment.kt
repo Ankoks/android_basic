@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.R
 import ru.ankoks.moviessearch.domain.MovieInfo
@@ -33,6 +35,16 @@ class MoviesFragment(var items: List<MovieInfo>) : Fragment() {
             items
         ) {
             (requireActivity() as? OnMovieClickListener)?.onClick(it)
+        }
+
+        setFragmentResultListener("requestKey") { requestKey, bundle ->
+            run {
+                Toast.makeText(
+                    context,
+                    bundle.getString("bundleKey").toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
