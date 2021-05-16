@@ -1,12 +1,13 @@
-package ru.ankoks.moviessearch
+package ru.ankoks.moviessearch.recycler
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import ru.ankoks.moviessearch.R
 import ru.ankoks.moviessearch.domain.MovieInfo
 
-class MovieVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class MoviesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val title = itemView.findViewById<TextView>(R.id.itemText)
     val img = itemView.findViewById<ImageView>(R.id.itemImg)
 

@@ -1,40 +1,25 @@
 package ru.ankoks.moviessearch
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
 import ru.ankoks.moviessearch.domain.MovieInfo
-import ru.ankoks.moviessearch.domain.MovieList
-import kotlin.system.exitProcess
+import ru.ankoks.moviessearch.fragments.MovieFragment
+import ru.ankoks.moviessearch.fragments.MoviesFragment
 
-class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val POSITION_PRESSED = "POSITION_PRESSED"
-        private const val REQUEST_CODE = 101
-    }
-
-    private val recycler by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
-    private val favourite by lazy { findViewById<View>(R.id.favouriteBtn) }
-
-    private var positionPressed: Int = -1
-
+class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener {
     private lateinit var items: List<MovieInfo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        items = mutableListOf(
+        initItems()
+        showNewsList()
+    }
+
+    private fun initItems() {
+        items = listOf(
             MovieInfo(
                 getString(R.string.star_wars_1),
                 getString(R.string.episode_1),
@@ -66,106 +51,41 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.poster_return_of_the_jedi
             )
         )
+    }
 
-        initRecycler()
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
 
-        savedInstanceState?.let {
-            val position = it.getInt(POSITION_PRESSED)
-
-            if (position != -1) {
-                positionPressed = position
-                items[position].clicked = true
-                recycler.adapter?.notifyItemChanged(position)
-            }
-        }
-
-        favourite.setOnClickListener {
-            val intent = Intent(this, FavouriteActivity::class.java)
-
-            intent.putExtra(FavouriteActivity.MOVIE_LIST, MovieList(items))
-
-            startActivity(intent)
+        if (fragment is MoviesFragment) {
+            fragment.listener = this
         }
     }
 
-    private fun initRecycler() {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        } else {
-            recycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+    private fun showNewsList() {
+        val moviesListFragment = MoviesFragment(
+            items
+        )
+        /*newsListFragment.listener = this*/
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragmentContainer, moviesListFragment, MoviesFragment.TAG)
+            .commit()
+    }
+
+    private fun showMoviesDetails(item: MovieInfo) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragmentContainer, MovieFragment.newInstanceKotlin(item), MovieFragment.TAG)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    override fun onClick(movieInfo: MovieInfo) {
+        items.forEach { element ->
+            element.clicked = false
         }
-        recycler.adapter = MovieAdapter(
-            items,
-            false,
-            fun(movieInfo: MovieInfo, position: Int) {
-                movieAction(movieInfo, position)
-                positionPressed = position
-            },
-            fun(movieInfo: MovieInfo, imageView: ImageView) {
-                if (movieInfo.isFavourite) {
-                    movieInfo.isFavourite = false
-                    imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
-                } else {
-                    movieInfo.isFavourite = true
-                    imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
-                }
+        movieInfo.clicked = true
 
-                recycler.adapter?.notifyDataSetChanged()
-            })
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.putInt(POSITION_PRESSED, positionPressed)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                val stringExtra = data?.getStringExtra("logMsg") ?: "no content"
-                Toast.makeText(this, stringExtra, Toast.LENGTH_SHORT).show()
-                Log.d("onActivityResult", stringExtra)
-
-                val pos = data?.getIntExtra("POSITION", -1)
-
-                pos?.let { it ->
-                    items.forEach { element ->
-                        element.clicked = false
-                    }
-                    items[it].clicked = true
-                    recycler.adapter?.notifyDataSetChanged()
-                }
-            }
-        }
-    }
-
-    override fun onBackPressed() {
-        customDialog()?.show()
-    }
-
-    private fun customDialog(): AlertDialog? {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Exit dialog")
-            .setMessage("Do you really want to exit?")
-            .setIcon(R.drawable.ic_baseline_mood_bad_24)
-            .setPositiveButton("No") { dialog, id ->
-                dialog.cancel()
-            }
-            .setNegativeButton("Yes") { dialog, id ->
-                exitProcess(0)
-            }
-        return builder.create()
-    }
-
-    private fun movieAction(movieInfo: MovieInfo, position: Int) {
-        val intent = Intent(this, MovieActivity::class.java)
-
-        intent.putExtra(MovieActivity.MOVIE_INFO, movieInfo)
-        intent.putExtra(MovieActivity.MOVIE_NUMBER, position)
-
-        startActivityForResult(intent, REQUEST_CODE)
+        showMoviesDetails(movieInfo)
     }
 }
