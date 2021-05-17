@@ -102,14 +102,7 @@ class MainActivity : AppCompatActivity() {
                 positionPressed = position
             },
             fun(movieInfo: MovieInfo, imageView: ImageView) {
-                if (movieInfo.isFavourite) {
-                    movieInfo.isFavourite = false
-                    imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
-                } else {
-                    movieInfo.isFavourite = true
-                    imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
-                }
-
+                movieInfo.isFavourite = !movieInfo.isFavourite
                 recycler.adapter?.notifyDataSetChanged()
             })
     }

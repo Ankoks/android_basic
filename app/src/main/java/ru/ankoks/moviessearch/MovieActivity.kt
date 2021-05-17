@@ -42,7 +42,7 @@ class MovieActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_info)
 
-        val movieInfo = intent.getParcelableExtra<MovieInfo>(MOVIE_INFO)!!
+        val movieInfo = intent.getSerializableExtra(MOVIE_INFO) as MovieInfo
         position = intent.getIntExtra(MOVIE_NUMBER, -1)
 
         image.setImageResource(movieInfo.image)

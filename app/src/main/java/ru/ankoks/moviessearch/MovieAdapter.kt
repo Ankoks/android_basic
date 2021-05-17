@@ -7,20 +7,21 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.domain.MovieInfo
 
 class MovieAdapter(
-        private val items: List<MovieInfo>,
-        private val isFavourite: Boolean,
-        val movieClickListener: (item: MovieInfo, position: Int) -> Unit,
-        val favouriteClickListener: (item: MovieInfo, imageView: ImageView) -> Unit
+    private val items: List<MovieInfo>,
+    private val isFavourite: Boolean,
+    val movieClickListener: (item: MovieInfo, position: Int) -> Unit,
+    val favouriteClickListener: (item: MovieInfo, imageView: ImageView) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (isFavourite) {
-            MovieVH(
-                    inflater.inflate(R.layout.favourite_item, parent, false)
+            FavouriteVH(
+                inflater.inflate(R.layout.favourite_item, parent, false)
             )
         } else {
             MovieVH(
-                    inflater.inflate(R.layout.movie_item, parent, false)
+                inflater.inflate(R.layout.movie_item, parent, false)
             )
         }
     }
@@ -38,6 +39,15 @@ class MovieAdapter(
 
             favourite?.setOnClickListener {
                 favouriteClickListener(movieInfo, favourite)
+            }
+        }
+
+        if (holder is FavouriteVH) {
+            val movieInfo = items[position]
+            holder.bind(movieInfo)
+
+            holder.itemView.setOnClickListener {
+                movieClickListener(movieInfo, position)
             }
         }
     }
