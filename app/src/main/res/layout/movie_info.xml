@@ -24,7 +24,7 @@
                 android:layout_height="300dp"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:src="@drawable/the_phantom_menace" />
+                android:src="@drawable/poster_the_phantom_menace" />
 
             <TextView
                 android:id="@+id/info"

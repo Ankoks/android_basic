@@ -3,7 +3,6 @@ package ru.ankoks.moviessearch
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
@@ -14,7 +13,10 @@ import ru.ankoks.moviessearch.domain.MovieInfo
 class MovieActivity : AppCompatActivity() {
     companion object {
         const val MOVIE_INFO = "MOVIE_INFO"
+        const val MOVIE_NUMBER = "MOVIE_NUMBER"
     }
+
+    private var position: Int = -1
 
     private val image by lazy {
         findViewById<ImageView>(R.id.imgResource)
@@ -38,13 +40,14 @@ class MovieActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.movie_activity)
+        setContentView(R.layout.movie_info)
 
-        val movieInfo = intent.getParcelableExtra<MovieInfo>(MOVIE_INFO)!!
+        val movieInfo = intent.getSerializableExtra(MOVIE_INFO) as MovieInfo
+        position = intent.getIntExtra(MOVIE_NUMBER, -1)
 
-        image.setImageResource(movieInfo.src)
+        image.setImageResource(movieInfo.image)
 
-        val descriptionText = getString(movieInfo.description)
+        val descriptionText = movieInfo.description
         info.text = descriptionText
 
         invite.setOnClickListener {
@@ -69,14 +72,16 @@ class MovieActivity : AppCompatActivity() {
     override fun onBackPressed() {
         setResult(
             Activity.RESULT_OK,
-            Intent().putExtra(
-                "logMsg",
-                String.format(
-                    "Like value: [%s] and user comment: [%s]",
-                    likeRadio.isChecked,
-                    commentText.text.toString()
+            Intent()
+                .putExtra(
+                    "logMsg",
+                    String.format(
+                        "Like value: [%s] and user comment: [%s]",
+                        likeRadio.isChecked,
+                        commentText.text.toString()
+                    )
                 )
-            )
+                .putExtra("POSITION", position)
         )
 
         super.onBackPressed()

@@ -1,152 +1,164 @@
 package ru.ankoks.moviessearch
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Color
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.domain.MovieInfo
+import ru.ankoks.moviessearch.domain.MovieList
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        private const val TEXT_COLOR_1 = "TEXT_COLOR_1"
-        private const val TEXT_COLOR_2 = "TEXT_COLOR_2"
-        private const val TEXT_COLOR_3 = "TEXT_COLOR_3"
+        private const val POSITION_PRESSED = "POSITION_PRESSED"
+        private const val REQUEST_CODE = 101
     }
 
-    private val textView1 by lazy {
-        findViewById<TextView>(R.id.txtView1)
-    }
-    private val textView2 by lazy {
-        findViewById<TextView>(R.id.txtView2)
-    }
-    private val textView3 by lazy {
-        findViewById<TextView>(R.id.txtView3)
-    }
+    private val recycler by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
+    private val favourite by lazy { findViewById<View>(R.id.favouriteBtn) }
 
-    private val img1 by lazy {
-        findViewById<ImageView>(R.id.episode_1_img)
-    }
-    private val img2 by lazy {
-        findViewById<ImageView>(R.id.episode_2_img)
-    }
-    private val img3 by lazy {
-        findViewById<ImageView>(R.id.episode_3_img)
-    }
+    private var positionPressed: Int = -1
+
+    private lateinit var items: List<MovieInfo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        items = mutableListOf(
+            MovieInfo(
+                getString(R.string.star_wars_1),
+                getString(R.string.episode_1),
+                R.drawable.poster_the_phantom_menace
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_2),
+                getString(R.string.episode_2),
+                R.drawable.poster_attack_clones
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_3),
+                getString(R.string.episode_3),
+                R.drawable.poster_revenge_of_the_sith
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_4),
+                getString(R.string.episode_4),
+                R.drawable.poster_new_hope
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_5),
+                getString(R.string.episode_5),
+                R.drawable.poster_the_empire_strikes_back
+            ),
+            MovieInfo(
+                getString(R.string.star_wars_6),
+                getString(R.string.episode_6),
+                R.drawable.poster_return_of_the_jedi
+            )
+        )
+
+        initRecycler()
+
         savedInstanceState?.let {
-            textView1.setTextColor(it.getInt(TEXT_COLOR_1))
-            textView2.setTextColor(it.getInt(TEXT_COLOR_2))
-            textView3.setTextColor(it.getInt(TEXT_COLOR_3))
+            val position = it.getInt(POSITION_PRESSED)
 
-            if (it.getInt(TEXT_COLOR_1) != Color.BLACK) {
-                img1.setBackgroundResource(R.drawable.border)
-            }
-            if (it.getInt(TEXT_COLOR_2) != Color.BLACK) {
-                img2.setBackgroundResource(R.drawable.border)
-            }
-            if (it.getInt(TEXT_COLOR_3) != Color.BLACK) {
-                img3.setBackgroundResource(R.drawable.border)
+            if (position != -1) {
+                positionPressed = position
+                items[position].clicked = true
+                recycler.adapter?.notifyItemChanged(position)
             }
         }
 
-        findViewById<View>(R.id.btn1).setOnClickListener {
-            btnAction("1")
-        }
+        favourite.setOnClickListener {
+            val intent = Intent(this, FavouriteActivity::class.java)
 
-        findViewById<View>(R.id.btn2).setOnClickListener {
-            btnAction("2")
-        }
+            intent.putExtra(FavouriteActivity.MOVIE_LIST, MovieList(items))
 
-        findViewById<View>(R.id.btn3).setOnClickListener {
-            btnAction("3")
+            startActivity(intent)
         }
+    }
+
+    private fun initRecycler() {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        } else {
+            recycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+        }
+        recycler.adapter = MovieAdapter(
+            items,
+            false,
+            fun(movieInfo: MovieInfo, position: Int) {
+                movieAction(movieInfo, position)
+                positionPressed = position
+            },
+            fun(movieInfo: MovieInfo, imageView: ImageView) {
+                movieInfo.isFavourite = !movieInfo.isFavourite
+                recycler.adapter?.notifyDataSetChanged()
+            })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putInt(TEXT_COLOR_1, textView1.currentTextColor)
-        outState.putInt(TEXT_COLOR_2, textView2.currentTextColor)
-        outState.putInt(TEXT_COLOR_3, textView3.currentTextColor)
+        outState.putInt(POSITION_PRESSED, positionPressed)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 111) {
+        if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val stringExtra = data?.getStringExtra("logMsg") ?: "no content"
-                Toast.makeText(this, stringExtra , Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, stringExtra, Toast.LENGTH_SHORT).show()
                 Log.d("onActivityResult", stringExtra)
+
+                val pos = data?.getIntExtra("POSITION", -1)
+
+                pos?.let { it ->
+                    items.forEach { element ->
+                        element.clicked = false
+                    }
+                    items[it].clicked = true
+                    recycler.adapter?.notifyDataSetChanged()
+                }
             }
         }
     }
 
-    private fun btnAction(value: String) {
+    override fun onBackPressed() {
+        customDialog()?.show()
+    }
+
+    private fun customDialog(): AlertDialog? {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Exit dialog")
+            .setMessage("Do you really want to exit?")
+            .setIcon(R.drawable.ic_baseline_mood_bad_24)
+            .setPositiveButton("No") { dialog, id ->
+                dialog.cancel()
+            }
+            .setNegativeButton("Yes") { dialog, id ->
+                exitProcess(0)
+            }
+        return builder.create()
+    }
+
+    private fun movieAction(movieInfo: MovieInfo, position: Int) {
         val intent = Intent(this, MovieActivity::class.java)
 
-        setColorAndBackground(value)
-        setMovieInfo(value, intent)
+        intent.putExtra(MovieActivity.MOVIE_INFO, movieInfo)
+        intent.putExtra(MovieActivity.MOVIE_NUMBER, position)
 
-        startActivityForResult(intent, 111)
-    }
-
-    private fun setColorAndBackground(value: String) {
-        when (value) {
-            "1" -> {
-                textView1.setTextColor(Color.BLUE)
-                img1.setBackgroundResource(R.drawable.border)
-
-                textView2.setTextColor(Color.BLACK)
-                img2.setBackgroundResource(0)
-
-                textView3.setTextColor(Color.BLACK)
-                img3.setBackgroundResource(0)
-            }
-            "2" -> {
-                textView1.setTextColor(Color.BLACK)
-                img1.setBackgroundResource(0)
-
-                textView2.setTextColor(Color.BLUE)
-                img2.setBackgroundResource(R.drawable.border)
-
-                textView3.setTextColor(Color.BLACK)
-                img3.setBackgroundResource(0)
-            }
-            "3" -> {
-                textView1.setTextColor(Color.BLACK)
-                img1.setBackgroundResource(0)
-
-                textView2.setTextColor(Color.BLACK)
-                img2.setBackgroundResource(0)
-
-                textView3.setTextColor(Color.BLUE)
-                img3.setBackgroundResource(R.drawable.border)
-            }
-        }
-    }
-
-    private fun setMovieInfo(value: String, intent: Intent) {
-        when (value) {
-            "1" -> {
-                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.the_phantom_menace, R.string.episode_1))
-            }
-            "2" -> {
-                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.attack_clones, R.string.episode_2))
-            }
-            "3" -> {
-                intent.putExtra(MovieActivity.MOVIE_INFO, MovieInfo(R.drawable.revenge_of_the_sith, R.string.episode_3))
-            }
-        }
+        startActivityForResult(intent, REQUEST_CODE)
     }
 }

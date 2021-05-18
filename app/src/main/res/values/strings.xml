@@ -3,6 +3,9 @@
     <string name="star_wars_1">Star wars 1</string>
     <string name="star_wars_2">Star wars 2</string>
     <string name="star_wars_3">Star wars 3</string>
+    <string name="star_wars_4">Star wars 4</string>
+    <string name="star_wars_5">Star wars 5</string>
+    <string name="star_wars_6">Star wars 6</string>
     <string name="detail">Detail</string>
     <string name="episode_1">
         Two Jedi escape a hostile blockade to find allies and come across a young boy who may bring balance to the Force, but the long dormant Sith resurface to claim their original glory.
@@ -13,7 +16,19 @@
     <string name="episode_3">
         Three years into the Clone Wars, the Jedi rescue Palpatine from Count Dooku. As Obi-Wan pursues a new threat, Anakin acts as a double agent between the Jedi Council and Palpatine and is lured into a sinister plan to rule the galaxy.
     </string>
+    <string name="episode_4">
+        Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee and two droids to save the galaxy from the Empires world-destroying battle station, while also attempting to rescue Princess Leia from the mysterious Darth Vader.
+    </string>
+    <string name="episode_5">
+        After the Rebels are brutally overpowered by the Empire on the ice planet Hoth, Luke Skywalker begins Jedi training with Yoda, while his friends are pursued by Darth Vader and a bounty hunter named Boba Fett all over the galaxy.
+    </string>
+    <string name="episode_6">
+        After a daring mission to rescue Han Solo from Jabba the Hutt, the Rebels dispatch to Endor to destroy the second Death Star. Meanwhile, Luke struggles to help Darth Vader back from the dark side without falling into the Emperors trap.
+    </string>
     <string name="like">Like</string>
     <string name="enter_your_text">Enter your text</string>
     <string name="invite_friends">Invite friends</string>
+    <string name="movie_poster">Movie poster</string>
+    <string name="add_to_favourite">Add to favourite</string>
+    <string name="favourite_text">Favourite</string>
 </resources>
