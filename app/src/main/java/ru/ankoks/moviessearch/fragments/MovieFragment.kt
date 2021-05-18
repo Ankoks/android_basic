@@ -39,7 +39,7 @@ class MovieFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.movie_info, container, false)
+        return inflater.inflate(R.layout.movie_info_coordinate_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
