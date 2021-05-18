@@ -1,5 +1,6 @@
 package ru.ankoks.moviessearch
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
@@ -10,9 +11,11 @@ import ru.ankoks.moviessearch.domain.MovieInfo
 import ru.ankoks.moviessearch.fragments.FavouritesFragment
 import ru.ankoks.moviessearch.fragments.MovieFragment
 import ru.ankoks.moviessearch.fragments.MoviesFragment
+import kotlin.system.exitProcess
 
 
-class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener, MoviesFragment.OnAddToFavouriteListener {
+class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener,
+    MoviesFragment.OnAddToFavouriteListener {
     private lateinit var items: List<MovieInfo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,5 +135,27 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener, M
             imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
             Toast.makeText(this, "Successfully added to favorites", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 1) {
+            customDialog()?.show()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun customDialog(): AlertDialog? {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Exit dialog")
+            .setMessage("Do you really want to exit?")
+            .setIcon(R.drawable.ic_baseline_mood_bad_24)
+            .setPositiveButton("No") { dialog, id ->
+                dialog.cancel()
+            }
+            .setNegativeButton("Yes") { dialog, id ->
+                exitProcess(0)
+            }
+        return builder.create()
     }
 }
