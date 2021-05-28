@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ankoks.moviessearch.domain.MovieInfo
+import ru.ankoks.moviessearch.domain.MovieList
 import ru.ankoks.moviessearch.fragments.FavouritesFragment
 import ru.ankoks.moviessearch.fragments.MovieFragment
 import ru.ankoks.moviessearch.fragments.MoviesFragment
@@ -18,13 +19,28 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener,
     MoviesFragment.OnAddToFavouriteListener {
     private lateinit var items: List<MovieInfo>
 
+    companion object {
+        const val TAG = "MainActivity"
+        private const val ITEMS = "ITEMS"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initItems()
+        if (savedInstanceState != null) savedInstanceState.let {
+            items = (it.getSerializable(ITEMS) as MovieList).items
+        } else {
+            initItems()
+        }
+
         showMoviesList()
         initBottomNavigation()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(ITEMS, MovieList(items))
     }
 
     private fun initItems() {
@@ -77,7 +93,7 @@ class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener,
 
     private fun showMoviesList() {
         openFragment(
-            MoviesFragment(
+            MoviesFragment.newInstance(
                 items
             )
         )

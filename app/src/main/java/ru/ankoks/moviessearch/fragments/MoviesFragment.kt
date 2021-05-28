@@ -7,17 +7,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import ru.ankoks.moviessearch.R
 import ru.ankoks.moviessearch.domain.MovieInfo
+import ru.ankoks.moviessearch.domain.MovieList
 import ru.ankoks.moviessearch.recycler.MoviesAdapter
 
-class MoviesFragment(var items: List<MovieInfo>) : Fragment() {
+class MoviesFragment : Fragment() {
+    private lateinit var items: List<MovieInfo>
+
     companion object {
         const val TAG = "MoviesListFragment"
+        private const val ITEMS = "ITEMS"
+
+        fun newInstance(items: List<MovieInfo>): MoviesFragment {
+            return MoviesFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(ITEMS, MovieList(items))
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -29,6 +42,8 @@ class MoviesFragment(var items: List<MovieInfo>) : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        items = (arguments?.getSerializable(ITEMS) as MovieList).items
+
         view.findViewById<RecyclerView>(R.id.recyclerView).adapter = MoviesAdapter(
             items,
             false,
