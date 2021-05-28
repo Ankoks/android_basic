@@ -25,7 +25,7 @@ class MovieFragment : Fragment() {
         fun newInstanceKotlin(movieInfo: MovieInfo): MovieFragment {
             return MovieFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(MOVIE_INFO, movieInfo)
+                    putSerializable(MOVIE_INFO, movieInfo)
                 }
             }
         }
@@ -43,7 +43,7 @@ class MovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val movieInfo = arguments?.getParcelable<MovieInfo>(MOVIE_INFO)
+        val movieInfo = arguments?.getSerializable(MOVIE_INFO) as MovieInfo
 
         val img = view.findViewById<ImageView>(R.id.imgResource)
         val info = view.findViewById<TextView>(R.id.info)
@@ -52,13 +52,11 @@ class MovieFragment : Fragment() {
         likeRadio = view.findViewById(R.id.like)
         commentText = view.findViewById(R.id.comment)
 
-        if (movieInfo != null) {
-            img.setImageResource(movieInfo.image)
-            info.text = movieInfo.description
+        img.setImageResource(movieInfo.image)
+        info.text = movieInfo.description
 
-            invite.setOnClickListener {
-                inviteBtn(movieInfo.description)
-            }
+        invite.setOnClickListener {
+            inviteBtn(movieInfo.description)
         }
     }
 
