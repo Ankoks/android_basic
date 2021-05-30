@@ -1,40 +1,50 @@
 package ru.ankoks.moviessearch
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ankoks.moviessearch.domain.MovieInfo
 import ru.ankoks.moviessearch.domain.MovieList
+import ru.ankoks.moviessearch.fragments.FavouritesFragment
+import ru.ankoks.moviessearch.fragments.MovieFragment
+import ru.ankoks.moviessearch.fragments.MoviesFragment
 import kotlin.system.exitProcess
 
-class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val POSITION_PRESSED = "POSITION_PRESSED"
-        private const val REQUEST_CODE = 101
-    }
 
-    private val recycler by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
-    private val favourite by lazy { findViewById<View>(R.id.favouriteBtn) }
-
-    private var positionPressed: Int = -1
-
+class MainActivity : AppCompatActivity(), MoviesFragment.OnMovieClickListener,
+    MoviesFragment.OnAddToFavouriteListener {
     private lateinit var items: List<MovieInfo>
+
+    companion object {
+        const val TAG = "MainActivity"
+        private const val ITEMS = "ITEMS"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        items = mutableListOf(
+        if (savedInstanceState != null) savedInstanceState.let {
+            items = (it.getSerializable(ITEMS) as MovieList).items
+        } else {
+            initItems()
+        }
+
+        showMoviesList()
+        initBottomNavigation()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(ITEMS, MovieList(items))
+    }
+
+    private fun initItems() {
+        items = listOf(
             MovieInfo(
                 getString(R.string.star_wars_1),
                 getString(R.string.episode_1),
@@ -66,77 +76,88 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.poster_return_of_the_jedi
             )
         )
-
-        initRecycler()
-
-        savedInstanceState?.let {
-            val position = it.getInt(POSITION_PRESSED)
-
-            if (position != -1) {
-                positionPressed = position
-                items[position].clicked = true
-                recycler.adapter?.notifyItemChanged(position)
-            }
-        }
-
-        favourite.setOnClickListener {
-            val intent = Intent(this, FavouriteActivity::class.java)
-
-            intent.putExtra(FavouriteActivity.MOVIE_LIST, MovieList(items))
-
-            startActivity(intent)
-        }
     }
 
-    private fun initRecycler() {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        } else {
-            recycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-        }
-        recycler.adapter = MovieAdapter(
-            items,
-            false,
-            fun(movieInfo: MovieInfo, position: Int) {
-                movieAction(movieInfo, position)
-                positionPressed = position
-            },
-            fun(movieInfo: MovieInfo, imageView: ImageView) {
-                movieInfo.isFavourite = !movieInfo.isFavourite
-                recycler.adapter?.notifyDataSetChanged()
-            })
+    private fun openFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                fragment,
+                MoviesFragment.TAG
+            )
+            .addToBackStack(null)
+            .commit()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
 
-        outState.putInt(POSITION_PRESSED, positionPressed)
+    private fun showMoviesList() {
+        openFragment(
+            MoviesFragment.newInstance(
+                items
+            )
+        )
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun showFavouritesList() {
+        openFragment(
+            FavouritesFragment(
+                items
+            )
+        )
+    }
 
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                val stringExtra = data?.getStringExtra("logMsg") ?: "no content"
-                Toast.makeText(this, stringExtra, Toast.LENGTH_SHORT).show()
-                Log.d("onActivityResult", stringExtra)
+    private fun showMoviesDetails(item: MovieInfo) {
+        openFragment(
+            MovieFragment.newInstanceKotlin(item)
+        )
+    }
 
-                val pos = data?.getIntExtra("POSITION", -1)
-
-                pos?.let { it ->
-                    items.forEach { element ->
-                        element.clicked = false
+    private fun initBottomNavigation() {
+        findViewById<BottomNavigationView>(R.id.bottom_navigation)
+            .setOnNavigationItemSelectedListener {
+                when (it.itemId) {
+                    R.id.homePage -> {
+                        showMoviesList()
+                        return@setOnNavigationItemSelectedListener true
                     }
-                    items[it].clicked = true
-                    recycler.adapter?.notifyDataSetChanged()
+
+                    R.id.favPage -> {
+                        showFavouritesList()
+                        return@setOnNavigationItemSelectedListener true
+                    }
                 }
+                false
             }
+    }
+
+    override fun onClick(movieInfo: MovieInfo) {
+        items.forEach { element ->
+            element.clicked = false
+        }
+        movieInfo.clicked = true
+
+        showMoviesDetails(movieInfo)
+    }
+
+    override fun onAddToFavourite(movieInfo: MovieInfo, imageView: ImageView) {
+        if (movieInfo.isFavourite) {
+            movieInfo.isFavourite = false
+            imageView.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+            Toast.makeText(this, "Successfully deleted from favorites", Toast.LENGTH_SHORT).show()
+        } else {
+            movieInfo.isFavourite = true
+            imageView.setImageResource(R.drawable.ic_baseline_favorite_24)
+            Toast.makeText(this, "Successfully added to favorites", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onBackPressed() {
-        customDialog()?.show()
+        if (supportFragmentManager.backStackEntryCount == 1) {
+            customDialog()?.show()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun customDialog(): AlertDialog? {
@@ -151,14 +172,5 @@ class MainActivity : AppCompatActivity() {
                 exitProcess(0)
             }
         return builder.create()
-    }
-
-    private fun movieAction(movieInfo: MovieInfo, position: Int) {
-        val intent = Intent(this, MovieActivity::class.java)
-
-        intent.putExtra(MovieActivity.MOVIE_INFO, movieInfo)
-        intent.putExtra(MovieActivity.MOVIE_NUMBER, position)
-
-        startActivityForResult(intent, REQUEST_CODE)
     }
 }
